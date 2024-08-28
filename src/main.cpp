@@ -4,6 +4,8 @@
 #include "common.h"
 #include "Ast.h"
 #include "Unit.h"
+#include "MachineCode.h"
+#include "LinearScan.h"
 
 extern FILE *yyin;
 extern FILE *yyout;
@@ -11,13 +13,14 @@ int yyparse();
 
 Ast ast;
 Unit unit;
+MachineUnit mUnit;
 char outfile[256] = "a.out";
 dump_type_t dump_type = ASM;
 
 int main(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "iato:")) != -1)
+    while ((opt = getopt(argc, argv, "Siato:")) != -1)
     {
         switch (opt)
         {
@@ -32,6 +35,9 @@ int main(int argc, char *argv[])
             break;
         case 'i':
             dump_type = IR;
+            break;
+        case 'S':
+            dump_type = ASM;
             break;
         default:
             fprintf(stderr, "Usage: %s [-o outfile] infile\n", argv[0]);
@@ -61,5 +67,10 @@ int main(int argc, char *argv[])
     ast.genCode(&unit);
     if(dump_type == IR)
         unit.output();
+    unit.genMachineCode(&mUnit);
+    LinearScan linearScan(&mUnit);
+    linearScan.allocateRegisters();
+    if(dump_type == ASM)
+        mUnit.output();
     return 0;
 }
