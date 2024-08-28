@@ -15,7 +15,7 @@ SRC += $(LEXER)
 OBJ = $(SRC:$(SRC_PATH)/%.cpp=$(OBJ_PATH)/%.o)
 
 TESTCASE = $(shell find $(TEST_PATH) -name "*.sy")
-OUTPUT_LAB3 = $(addsuffix .toks, $(basename $(TESTCASE)))
+OUTPUT_LAB1 = $(addsuffix .toks, $(basename $(TESTCASE)))
 
 .phony:all app run gdb test clean 
 
@@ -46,7 +46,7 @@ $(OBJ_PATH)/lexer.o:$(SRC_PATH)/lexer.cpp
 $(TEST_PATH)/%.toks:$(TEST_PATH)/%.sy
 	@$(BINARY) $< -o $@ -t
 
-test:app $(OUTPUT_LAB3)
+test:app $(OUTPUT_LAB1)
 
 clean:
 	@rm -rf $(BUILD_PATH) $(LEXER) $(OUTPUT_LAB3) *.toks *.out
