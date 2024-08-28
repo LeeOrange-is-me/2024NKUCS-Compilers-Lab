@@ -22,14 +22,14 @@ PARSERH ?= $(INC_PATH)/$(addsuffix .h, $(notdir $(basename $(PARSER))))
 TESTCASE = $(shell find $(TEST_PATH) -name "*.sy")
 TESTCASE_NUM = $(words $(TESTCASE))
 LLVM_IR = $(addsuffix _std.ll, $(basename $(TESTCASE)))
-OUTPUT_LAB3 = $(addsuffix .toks, $(basename $(TESTCASE)))
-OUTPUT_LAB4 = $(addsuffix .ast, $(basename $(TESTCASE)))
-OUTPUT_LAB5 = $(addsuffix .ll, $(basename $(TESTCASE)))
+OUTPUT_LAB1 = $(addsuffix .toks, $(basename $(TESTCASE)))
+OUTPUT_LAB2 = $(addsuffix .ast, $(basename $(TESTCASE)))
+OUTPUT_LAB3 = $(addsuffix .ll, $(basename $(TESTCASE)))
 OUTPUT_RES = $(addsuffix .res, $(basename $(TESTCASE)))
 OUTPUT_BIN = $(addsuffix .bin, $(basename $(TESTCASE)))
 OUTPUT_LOG = $(addsuffix .log, $(basename $(TESTCASE)))
 
-.phony:all app run gdb testlab3 testlab4 testlab5 test clean clean-all clean-test clean-app llvmir
+.phony:all app run gdb testlab1 testlab2 testlab3 test clean clean-all clean-test clean-app llvmir
 
 all:app
 
@@ -73,11 +73,11 @@ $(TEST_PATH)/%_std.ll:$(TEST_PATH)/%.sy
 
 llvmir:$(LLVM_IR)
 
+testlab1:app $(OUTPUT_LAB1)
+
+testlab2:app $(OUTPUT_LAB2)
+
 testlab3:app $(OUTPUT_LAB3)
-
-testlab4:app $(OUTPUT_LAB4)
-
-testlab5:app $(OUTPUT_LAB5)
 
 .ONESHELL:
 test:app
@@ -138,7 +138,7 @@ clean-app:
 	@rm -rf $(BUILD_PATH) $(PARSER) $(LEXER) $(PARSERH)
 
 clean-test:
-	@rm -rf $(OUTPUT_LAB3) $(OUTPUT_LAB4) $(OUTPUT_LAB5) $(OUTPUT_LOG) $(OUTPUT_BIN) $(OUTPUT_RES) $(LLVM_IR) *.toks *.ast *.ll *.s *.out
+	@rm -rf $(OUTPUT_LAB1) $(OUTPUT_LAB2) $(OUTPUT_LAB3) $(OUTPUT_LOG) $(OUTPUT_BIN) $(OUTPUT_RES) $(LLVM_IR) *.toks *.ast *.ll *.s *.out
 
 clean-all:clean-test clean-app
 
