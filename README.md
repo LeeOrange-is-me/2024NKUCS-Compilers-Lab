@@ -58,7 +58,7 @@ TEST_PATH ?= test/Basic
 ```
 该命令会默认搜索test目录下所有的.sy文件，逐个输入到编译器中，生成相应的中间代码.ll文件到test目录中。你还可以指定测试目录：
 ```
-    make testlab5 TEST_PATH=dirpath
+    make testlab3 TEST_PATH=dirpath
 ```
 
 * 批量测试：
