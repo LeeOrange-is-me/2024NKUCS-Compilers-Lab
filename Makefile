@@ -49,4 +49,4 @@ $(TEST_PATH)/%.toks:$(TEST_PATH)/%.sy
 test:app $(OUTPUT_LAB1)
 
 clean:
-	@rm -rf $(BUILD_PATH) $(LEXER) $(OUTPUT_LAB3) *.toks *.out
+	@rm -rf $(BUILD_PATH) $(LEXER) $(OUTPUT_LAB1) *.toks *.out
