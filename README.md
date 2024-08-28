@@ -1,9 +1,9 @@
-# 2024lab1-构造词法分析器
-For 2024Fall NKUCS Course - Principle of Compilers Lab1
+# 2024lab2-构造语法分析器
+For 2024Fall NKUCS Course - Principle of Compilers Lab2
 
 > Original Author: Emanual20 YoungCoder
 > 
-> Date: 2024/9/5
+> Date: 2024/9/15
 
 ## 编译器命令
 ```
@@ -11,6 +11,7 @@ Usage：build/compiler [options] infile
 Options:
     -o <file>   Place the output into <file>.
     -t          Print tokens.
+    -a          Print abstract syntax tree.
 ```
 
 ## Makefile使用
@@ -42,15 +43,15 @@ TEST_PATH ?= test/Basic
 ```
     make run
 ```
-以example.sy文件为输入，输出相应的词法分析结果到example.toks文件中。
+以example.sy文件为输入，输出相应的语法分析结果到example.ast文件中。
 
 * 测试：
 ```
-    make test
+    make testlab2
 ```
-该命令会默认搜索test目录下所有的.sy文件，逐个输入到编译器中，生成相应的词法分析结果.toks文件到test目录中。你还可以指定测试目录：
+该命令会默认搜索test目录下所有的.sy文件，逐个输入到编译器中，生成相应的语法分析结果.ast文件到test目录中。你还可以指定测试目录：
 ```
-    make test TEST_PATH=dirpath
+    make testlab2 TEST_PATH=dirpath
 ```
 
 * 清理:
