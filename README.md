@@ -19,7 +19,7 @@ Options:
 
 默认测试路径为test，你可以修改为任意要测试的路径。我们已将最终所有测试样例分级上传。
 
-如：要测试level1-1下所有sy文件，可以将makefile中的
+如：要测试Basic下所有sy文件，可以将makefile中的
 
 ```
 TEST_PATH ?= test
@@ -28,7 +28,7 @@ TEST_PATH ?= test
 修改为
 
 ```
-TEST_PATH ?= test/level1-1
+TEST_PATH ?= test/Basic
 ```
 
 * 编译：
