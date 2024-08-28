@@ -54,6 +54,11 @@ WHITE [\t ]
     return RETURN;
 }
 
+"&&" {
+    dump_tokens("AND\t%s\n", yytext);
+    return AND;
+}
+
 "=" {
     dump_tokens("ASSIGN\t%s\n", yytext);
     return ASSIGN;
