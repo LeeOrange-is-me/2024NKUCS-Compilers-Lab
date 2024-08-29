@@ -1,4 +1,3 @@
-.vscode
 build
 lexer.cpp
 parser.cpp

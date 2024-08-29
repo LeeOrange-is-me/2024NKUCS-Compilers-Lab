@@ -2,7 +2,7 @@ SHELL := /bin/bash
 SRC_PATH ?= src
 INC_PATH += include
 BUILD_PATH ?= build
-TEST_PATH ?= test/level1-1
+TEST_PATH ?= test/
 OBJ_PATH ?= $(BUILD_PATH)/obj
 BINARY ?= $(BUILD_PATH)/compiler
 SYSLIB_PATH ?= sysyruntimelibrary
@@ -23,15 +23,15 @@ TESTCASE = $(shell find $(TEST_PATH) -name "*.sy")
 TESTCASE_NUM = $(words $(TESTCASE))
 LLVM_IR = $(addsuffix _std.ll, $(basename $(TESTCASE)))
 GCC_ASM = $(addsuffix _std.s, $(basename $(TESTCASE)))
-OUTPUT_LAB3 = $(addsuffix .toks, $(basename $(TESTCASE)))
-OUTPUT_LAB4 = $(addsuffix .ast, $(basename $(TESTCASE)))
-OUTPUT_LAB5 = $(addsuffix .ll, $(basename $(TESTCASE)))
-OUTPUT_LAB6 = $(addsuffix .s, $(basename $(TESTCASE)))
+OUTPUT_LAB1 = $(addsuffix .toks, $(basename $(TESTCASE)))
+OUTPUT_LAB2 = $(addsuffix .ast, $(basename $(TESTCASE)))
+OUTPUT_LAB3 = $(addsuffix .ll, $(basename $(TESTCASE)))
+OUTPUT_LAB4 = $(addsuffix .s, $(basename $(TESTCASE)))
 OUTPUT_RES = $(addsuffix .res, $(basename $(TESTCASE)))
 OUTPUT_BIN = $(addsuffix .bin, $(basename $(TESTCASE)))
 OUTPUT_LOG = $(addsuffix .log, $(basename $(TESTCASE)))
 
-.phony:all app run gdb testlab3 testlab4 testlab5 testlab6 testir test clean clean-all clean-test clean-app llvmir gccasm
+.phony:all app run gdb testlab1 testlab2 testlab3 testlab4 testir test clean clean-all clean-test clean-app llvmir gccasm
 
 all:app
 
@@ -83,13 +83,13 @@ llvmir:$(LLVM_IR)
 
 gccasm:$(GCC_ASM)
 
+testlab1:app $(OUTPUT_LAB1)
+
+testlab2:app $(OUTPUT_LAB2)
+
 testlab3:app $(OUTPUT_LAB3)
 
 testlab4:app $(OUTPUT_LAB4)
-
-testlab5:app $(OUTPUT_LAB5)
-
-testlab6:app $(OUTPUT_LAB6)
 
 .ONESHELL:
 testir:app
@@ -205,7 +205,7 @@ clean-app:
 	@rm -rf $(BUILD_PATH) $(PARSER) $(LEXER) $(PARSERH)
 
 clean-test:
-	@rm -rf $(OUTPUT_LAB3) $(OUTPUT_LAB4) $(OUTPUT_LAB5) $(OUTPUT_LAB6) $(OUTPUT_LOG) $(OUTPUT_BIN) $(OUTPUT_RES) $(LLVM_IR) $(GCC_ASM) *.toks *.ast *.ll *.s *.out
+	@rm -rf $(OUTPUT_LAB1) $(OUTPUT_LAB2) $(OUTPUT_LAB3) $(OUTPUT_LAB4) $(OUTPUT_LOG) $(OUTPUT_BIN) $(OUTPUT_RES) $(LLVM_IR) $(GCC_ASM) *.toks *.ast *.ll *.s *.out
 
 clean-all:clean-test clean-app
 
