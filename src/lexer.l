@@ -16,7 +16,7 @@
         va_end(args);
     }
 
-    /* Your code here, if desired (lab3). */
+    /* Your code here, if desired (lab1). */
 %}
 
 /* definitions section */
@@ -24,7 +24,7 @@ DECIMIAL ([1-9][0-9]*|0)
 ID [[:alpha:]_][[:alpha:][:digit:]_]*
 EOL (\r\n|\n|\r)
 WHITE [\t ]
-/*  Your code here (lab3). */
+/*  Your code here (lab1). */
 
 %%
     /* rules section */
@@ -94,6 +94,6 @@ WHITE [\t ]
 
 {WHITE}
 
-    /*  Your code here (lab3). */
+    /*  Your code here (lab1). */
 %%
 /* user code section */
