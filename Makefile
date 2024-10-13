@@ -19,8 +19,8 @@ OBJ = $(SRC:$(SRC_PATH)/%.cpp=$(OBJ_PATH)/%.o)
 PARSERH ?= $(INC_PATH)/$(addsuffix .h, $(notdir $(basename $(PARSER))))
 
 TESTCASE = $(shell find $(TEST_PATH) -name "*.sy")
-OUTPUT_LAB3 = $(addsuffix .toks, $(basename $(TESTCASE)))
-OUTPUT_LAB4 = $(addsuffix .ast, $(basename $(TESTCASE)))
+OUTPUT_LAB1 = $(addsuffix .toks, $(basename $(TESTCASE)))
+OUTPUT_LAB2 = $(addsuffix .ast, $(basename $(TESTCASE)))
 
 .phony:all app run gdb testlab1 testlab2 clean 
 
@@ -57,9 +57,9 @@ $(TEST_PATH)/%.toks:$(TEST_PATH)/%.sy
 $(TEST_PATH)/%.ast:$(TEST_PATH)/%.sy
 	@$(BINARY) $< -o $@ -a
 
-testlab1:app $(OUTPUT_LAB3)
+testlab1:app $(OUTPUT_LAB1)
 
-testlab2:app $(OUTPUT_LAB4)
+testlab2:app $(OUTPUT_LAB2)
 
 clean:
-	@rm -rf $(BUILD_PATH) $(PARSER) $(LEXER) $(PARSERH) $(OUTPUT_LAB3) $(OUTPUT_LAB4) *.out *.toks *.ast
+	@rm -rf $(BUILD_PATH) $(PARSER) $(LEXER) $(PARSERH) $(OUTPUT_LAB1) $(OUTPUT_LAB2) *.out *.toks *.ast
