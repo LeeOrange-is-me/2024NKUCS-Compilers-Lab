@@ -63,7 +63,7 @@ TEST_PATH ?= test/Basic
 
 * 批量测试：
 ```
-    make test
+    make test 
 ```
 对TEST_PATH目录下的每个.sy文件，编译器将其编译成中间代码.ll文件， 再使用llvm将.ll文件汇编成二进制文件后执行， 将得到的输出与标准输出对比， 验证编译器实现的正确性。错误信息描述如下：
 |  错误信息   | 描述  |
@@ -82,6 +82,18 @@ TEST_PATH ?= test/Basic
     make llvmir
 ```
 使用llvm编译器生成中间代码。
+
+* 代码优化检查之eliUnreachablebb
+```
+make test  // 先生成 test/optimize_test/eliUnreachablebb当中.sy 文件对应的.ll 文件
+make  check_mem2reg
+```
+
+* 代码优化检查之basic_mem2reg
+```
+make test  // 先生成 test/optimize_test/basic_mem2reg当中.sy 文件对应的.ll 文件
+make  check_mem2reg
+```
 
 * 清理:
 ```
