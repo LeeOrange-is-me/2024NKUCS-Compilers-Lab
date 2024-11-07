@@ -138,14 +138,66 @@ check_mem2reg:
 	@total_files=0
 	@passed_files=0
 	OPTIMIZE_DIR=test/optimize_test/basic_mem2reg/
-	for ll_file in $$(find $${OPTIMIZE_DIR} -name "*.ll")
+	for file in $$(find $${OPTIMIZE_DIR} -name "*.sy")
 	do
+		IR=$${file%.*}.ll
+		LOG=$${file%.*}.log
+		BIN=$${file%.*}.bin
+		RES=$${file%.*}.res
+		IN=$${file%.*}.in
+		OUT=$${file%.*}.out
+		FILE=$${file##*/}
+		FILE=$${FILE%.*}
+		timeout 60s $(BINARY) $${file} -o $${IR} -i 2>$${LOG}
+		RETURN_VALUE=$$?
 		total_files=$$((total_files + 1))
-		if ! grep -q "alloca" $${ll_file}; then
-			passed_files=$$((passed_files + 1))
-			echo -e "\033[1;32mPASS:\033[0m $${ll_file}"
+	
+		if [ $$RETURN_VALUE = 124 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mCompile Timeout\033[0m"
+			continue
+		else if [ $$RETURN_VALUE != 0 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mCompile Error\033[0m"
+			continue
+			fi
+		fi
+		
+		clang -o $${BIN} $${IR} $(SYSLIB_PATH)/sylib.c >>$${LOG} 2>&1
+		if [ $$? != 0 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mAssemble Error\033[0m"
+			continue
 		else
-			echo -e "\033[1;31mFAIL:\033[0m $${ll_file}\t\033[1;31mContains 'alloca'\033[0m"
+			if [ -f "$${IN}" ]; then
+				timeout 10s $${BIN} <$${IN} >$${RES} 2>>$${LOG}
+			else
+				timeout 10s $${BIN} >$${RES} 2>>$${LOG}
+			fi
+			RETURN_VALUE=$$?
+			FINAL=`tail -c 1 $${RES}`
+			[ $${FINAL} ] && echo -e "\n$${RETURN_VALUE}" >> $${RES} || echo "$${RETURN_VALUE}" >> $${RES}
+			if [ "$${RETURN_VALUE}" = "124" ]; then
+				echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mExecute Timeout\033[0m"
+				continue
+			else if [ "$${RETURN_VALUE}" = "127" ]; then
+				echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mExecute Error\033[0m"
+				continue
+				else
+					diff -Z $${RES} $${OUT} >/dev/null 2>&1
+					if [ $$? != 0 ]; then
+						echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mWrong Answer\033[0m"
+						continue
+					else
+						echo -e "\033[1;32mCorrect Answer:\033[0m $${FILE}"
+					fi
+				fi
+			fi
+		fi
+		
+		
+		if ! grep -q "alloca" $${IR}; then
+			passed_files=$$((passed_files + 1)) 
+			echo -e "\033[1;32mPASS:\033[0m $${FILE}"
+		else
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mContains 'alloca'\033[0m"
 		fi
 	done
 	if [ $${total_files} -gt 0 ]; then
@@ -157,22 +209,73 @@ check_mem2reg:
 check_unreachable:
 	@total_files=0
 	@passed_files=0
-	@OPTIMIZE_DIR=test/optimize_test/eliUnreachablebb/
+	OPTIMIZE_DIR=test/optimize_test/eliUnreachablebb/
 	@if [ ! -d "$${OPTIMIZE_DIR}" ]; then \
 		echo -e "\033[1;31mDirectory $${OPTIMIZE_DIR} does not exist.\033[0m"; \
 		exit 1; \
 	fi
-	@for ll_file in $$(find $${OPTIMIZE_DIR} -name "*.ll")
+	@for file in $$(find $${OPTIMIZE_DIR} -name "*.sy")
 	do \
-		total_files=$$((total_files + 1)); \
-		file_size=$$(stat -c %s $${ll_file}); \
+		IR=$${file%.*}.ll
+		LOG=$${file%.*}.log
+		BIN=$${file%.*}.bin
+		RES=$${file%.*}.res
+		IN=$${file%.*}.in
+		OUT=$${file%.*}.out
+		FILE=$${file##*/}
+		FILE=$${FILE%.*}
+		timeout 60s $(BINARY) $${file} -o $${IR} -i 2>$${LOG}
+		RETURN_VALUE=$$?
+		total_files=$$((total_files + 1))
+		if [ $$RETURN_VALUE = 124 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mCompile Timeout\033[0m"
+			continue
+		else if [ $$RETURN_VALUE != 0 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mCompile Error\033[0m"
+			continue
+			fi
+		fi
+		
+		clang -o $${BIN} $${IR} $(SYSLIB_PATH)/sylib.c >>$${LOG} 2>&1
+		if [ $$? != 0 ]; then
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mAssemble Error\033[0m"
+			continue
+		else
+			if [ -f "$${IN}" ]; then
+				timeout 10s $${BIN} <$${IN} >$${RES} 2>>$${LOG}
+			else
+				timeout 10s $${BIN} >$${RES} 2>>$${LOG}
+			fi
+			RETURN_VALUE=$$?
+			FINAL=`tail -c 1 $${RES}`
+			[ $${FINAL} ] && echo -e "\n$${RETURN_VALUE}" >> $${RES} || echo "$${RETURN_VALUE}" >> $${RES}
+			if [ "$${RETURN_VALUE}" = "124" ]; then
+				echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mExecute Timeout\033[0m"
+				continue
+			else if [ "$${RETURN_VALUE}" = "127" ]; then
+				echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mExecute Error\033[0m"
+				continue
+				else
+					diff -Z $${RES} $${OUT} >/dev/null 2>&1
+					if [ $$? != 0 ]; then
+						echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mWrong Answer\033[0m"
+						continue
+					else
+						echo -e "\033[1;32mCorrect Answer:\033[0m $${FILE}"
+					fi
+				fi
+			fi
+		fi
+		
+		file_size=$$(stat -c %s $${IR}); \
 		if [ $${file_size} -lt 8000 ]; then \
 			passed_files=$$((passed_files + 1)); \
-			echo -e "\033[1;32mPASS:\033[0m $${ll_file}\t\033[1;32mFile size: $${file_size} bytes\033[0m"; \
+			echo -e "\033[1;32mPASS:\033[0m $${FILE}\t\033[1;32mFile size: $${file_size} bytes\033[0m"; \
 		else \
-			echo -e "\033[1;31mFAIL:\033[0m $${ll_file}\t\033[1;31mFile size: $${file_size} bytes (greater than or equal to 8000 bytes)\033[0m"; \
+			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mFile size: $${file_size} bytes (greater than or equal to 8000 bytes)\033[0m"; \
 		fi; \
 	done
+	
 	@if [ $${total_files} -gt 0 ]; then \
 		echo -e "\033[1;33mTotal .ll files: $${total_files}\tPassed: $${passed_files}\tFailed: $$(($${total_files} - $${passed_files}))\033[0m"; \
 	else \
