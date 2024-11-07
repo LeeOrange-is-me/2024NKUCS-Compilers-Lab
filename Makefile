@@ -29,7 +29,7 @@ OUTPUT_RES = $(addsuffix .res, $(basename $(TESTCASE)))
 OUTPUT_BIN = $(addsuffix .bin, $(basename $(TESTCASE)))
 OUTPUT_LOG = $(addsuffix .log, $(basename $(TESTCASE)))
 
-.phony:all app run gdb testlab1 testlab2 testlab3 test clean clean-all clean-test clean-app llvmir
+.phony:all app run gdb testlab1 testlab2 testlab3 test check_mem2reg check_unreachable clean clean-all clean-test clean-app llvmir
 
 all:app
 
@@ -133,6 +133,52 @@ test:app
 	echo -e "\033[1;33mTotal: $(TESTCASE_NUM)\t\033[1;32mAccept: $${success}\t\033[1;31mFail: $$(($(TESTCASE_NUM) - $${success}))\033[0m"
 	[ $(TESTCASE_NUM) = $${success} ] && echo -e "\033[5;32mAll Accepted. Congratulations!\033[0m"
 	:
+
+check_mem2reg:
+	@total_files=0
+	@passed_files=0
+	OPTIMIZE_DIR=test/optimize_test/basic_mem2reg/
+	for ll_file in $$(find $${OPTIMIZE_DIR} -name "*.ll")
+	do
+		total_files=$$((total_files + 1))
+		if ! grep -q "alloca" $${ll_file}; then
+			passed_files=$$((passed_files + 1))
+			echo -e "\033[1;32mPASS:\033[0m $${ll_file}"
+		else
+			echo -e "\033[1;31mFAIL:\033[0m $${ll_file}\t\033[1;31mContains 'alloca'\033[0m"
+		fi
+	done
+	if [ $${total_files} -gt 0 ]; then
+		echo -e "\033[1;33mTotal .ll files: $${total_files}\tPassed: $${passed_files}\tFailed: $$(($${total_files} - $${passed_files}))\033[0m"
+	else
+		echo -e "\033[1;31mNo .ll files found in $${OPTIMIZE_DIR}\033[0m"
+	fi
+
+check_unreachable:
+	@total_files=0
+	@passed_files=0
+	@OPTIMIZE_DIR=test/optimize_test/eliUnreachablebb/
+	@if [ ! -d "$${OPTIMIZE_DIR}" ]; then \
+		echo -e "\033[1;31mDirectory $${OPTIMIZE_DIR} does not exist.\033[0m"; \
+		exit 1; \
+	fi
+	@for ll_file in $$(find $${OPTIMIZE_DIR} -name "*.ll")
+	do \
+		total_files=$$((total_files + 1)); \
+		file_size=$$(stat -c %s $${ll_file}); \
+		if [ $${file_size} -lt 8000 ]; then \
+			passed_files=$$((passed_files + 1)); \
+			echo -e "\033[1;32mPASS:\033[0m $${ll_file}\t\033[1;32mFile size: $${file_size} bytes\033[0m"; \
+		else \
+			echo -e "\033[1;31mFAIL:\033[0m $${ll_file}\t\033[1;31mFile size: $${file_size} bytes (greater than or equal to 8000 bytes)\033[0m"; \
+		fi; \
+	done
+	@if [ $${total_files} -gt 0 ]; then \
+		echo -e "\033[1;33mTotal .ll files: $${total_files}\tPassed: $${passed_files}\tFailed: $$(($${total_files} - $${passed_files}))\033[0m"; \
+	else \
+		echo -e "\033[1;31mNo .ll files found in $${OPTIMIZE_DIR}\033[0m"; \
+	fi
+
 
 clean-app:
 	@rm -rf $(BUILD_PATH) $(PARSER) $(LEXER) $(PARSERH)
