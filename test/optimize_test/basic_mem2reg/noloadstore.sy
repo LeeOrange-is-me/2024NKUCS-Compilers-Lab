@@ -1,6 +1,6 @@
+int a = 6;
 int main()
 {
-    int a = 6;
     int i = 0;
     int i1 = 0;
     int i2 = 0;
@@ -50180,3 +50180,4 @@ int main()
     }
     return a*a;
 }
+
