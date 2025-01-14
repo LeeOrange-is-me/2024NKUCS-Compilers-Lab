@@ -106,6 +106,15 @@ testir:app
 		FILE=$${FILE%.*}
 		timeout 5s $(BINARY) $${file} -o $${IR} -i 2>$${LOG}
 		RETURN_VALUE=$$?
+
+		FINAL=`tail -c 1 $${RES}`
+		@LAST_CHAR=`tail -c 1 "$${RES}" | od -An -t u1 | tr -d ' \n'` ; \
+		if [ "$${LAST_CHAR}" != "10" ] && [ "$${LAST_CHAR}" != "" ]; then \
+		echo "" >> "$${RES}" ; \
+		fi
+		echo "$${RETURN_VALUE}" >> "$${RES}"
+
+
 		if [ $$RETURN_VALUE = 124 ]; then
 			echo -e "\033[1;31mFAIL:\033[0m $${FILE}\t\033[1;31mCompile Timeout\033[0m"
 			continue
